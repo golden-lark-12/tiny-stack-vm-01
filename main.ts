@@ -2,7 +2,7 @@ import{mkdirSync,readdirSync,readFileSync,writeFileSync}from'node:fs';
 function run(P,N){
 const S=new Int32Array(256),M=new Int32Array(256),C=new Int32Array(64),O=[];
 let sp=0,cp=0,pc=0,ip=0,st=0,ol=0,a,b;
-const need=k=>{if(sp<k)throw 2},push=v=>{if(sp>255)throw 3;S[sp++]=v},bin=f=>{need(2);b=S[--sp];a=S[--sp];S[sp++]=f(a,b)},J=()=>pc+3+(((P[pc+1]|P[pc+2]<<8)<<16)>>16);
+const need=k=>{if(sp<k)throw 2},push=v=>{if(sp>255)throw 3;S[sp++]=v},bin=f=>{need(2);b=S[--sp];a=S[--sp];S[sp++]=f(a,b)},J=()=>pc+3+(((P[pc+1]|P[pc+2]<<8)<<16)>>16),F=String.fromCharCode;
 try{for(;;){
 if(st++>=1e6)throw 10;
 if(pc<0||pc>=P.length)throw 9;
@@ -46,7 +46,7 @@ case 52:if(!cp)throw 8;pc=C[--cp];continue;
 case 64:need(1);a=S[--sp];if(a<0||a>255)throw 6;S[sp++]=M[a];break;
 case 65:need(2);b=S[--sp];a=S[--sp];if(b<0||b>255)throw 6;M[b]=a;break;
 case 80:need(1);a=S[--sp];{const t=String(a);if(ol+t.length>65536)throw 11;ol+=t.length;O.push(t)}break;
-case 81:need(1);a=S[--sp];if(ol>65535)throw 11;ol++;O.push(String.fromCharCode(a&255));break;
+case 81:need(1);a=S[--sp];if(ol>65535)throw 11;ol++;O.push(F(a&255));break;
 case 82:push(ip<N.length?N[ip++]:-1);break;
 case 83:need(1);return[S[--sp]&255,O];
 }
@@ -57,6 +57,6 @@ const I=process.env.MAKEFUN_INPUT_DIR??'/input',O=process.env.MAKEFUN_OUTPUT_DIR
 for(const d of readdirSync(I).sort()){
 const[e,o]=run(readFileSync(I+'/'+d+'/program.bin'),readFileSync(I+'/'+d+'/input.bin'));
 mkdirSync(O+'/'+d,{recursive:true});
-writeFileSync(O+'/'+d+'/stdout.bin',Buffer.from(o.join(''),'latin1'));
+writeFileSync(O+'/'+d+'/stdout.bin',o.join(''),'latin1');
 writeFileSync(O+'/'+d+'/exit.txt',e+'\n');
 }
